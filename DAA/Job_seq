@@ -1,0 +1,67 @@
+import java.util.*;
+
+class Job {
+    char id;
+    int deadline;
+    int profit;
+
+    Job(char id, int deadline, int profit) {
+        this.id = id;
+        this.deadline = deadline;
+        this.profit = profit;
+    }
+}
+
+public class job_sequencing {
+    public static void main(String[] args) {
+        // Step 1: Create a list of Job objects with their respective IDs, deadlines, and profits.
+        List<Job> jobs = new ArrayList<>();
+        jobs.add(new Job('a', 2, 100));
+        jobs add(new Job('b', 1, 19));
+        jobs add(new Job('c', 2, 27));
+        jobs add(new Job('d', 1, 25));
+        jobs add(new Job('e', 3, 15));
+
+        // Step 2: Sort the jobs by profit in descending order to prioritize higher profit jobs.
+        Collections.sort(jobs, (a, b) -> Integer.compare(b.profit, a.profit));
+
+        // Step 3: Find the maximum deadline among all jobs.
+        int maxDeadline = jobs.stream().mapToInt(job -> job.deadline).max().orElse(0);
+
+        // Initialize arrays to track the job sequence and slot availability.
+        char[] sequence = new char[maxDeadline];
+        boolean[] slot = new boolean[maxDeadline];
+
+        for (int i = 0; i < maxDeadline; i++) {
+            slot[i] = false;
+        }
+
+        // Step 4: Iterate through the sorted jobs and assign them to available slots, starting from the job with the highest profit.
+        for (Job job : jobs) {
+            for (int i = Math.min(maxDeadline - 1, job.deadline - 1); i >= 0; i--) {
+                if (!slot[i]) {
+                    slot[i] = true;
+                    sequence[i] = job.id;
+                    break;
+                }
+            }
+        }
+
+        // Step 5: Print the job sequence.
+        System.out.println("Job Sequence: " + new String(sequence));
+
+        // Step 6: Calculate the total profit by summing up the profits of the selected jobs.
+        int totalProfit = 0;
+        for (Job job : jobs) {
+            if (new String(sequence).contains(String.valueOf(job.id))) {
+                totalProfit += job.profit;
+            }
+        }
+
+        // Step 7: Print the total profit.
+        System.out.println("Total Profit: " + totalProfit);
+    }
+}
+
+//Time Complexity: O(N2)
+//Auxiliary Space: O(N)
