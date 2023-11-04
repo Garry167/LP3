@@ -1,0 +1,40 @@
+import java.util.*;
+
+class KnapsackItem {
+    int value, weight;
+
+    KnapsackItem(int value, int weight) {
+        this.value = value;
+        this.weight = weight;
+    }
+}
+
+public class ZeroOneKnapsack {
+    static int knapsack(int W, KnapsackItem[] items, int n) {
+        int[][] dp = new int[n + 1][W + 1];
+
+        for (int i = 0; i <= n; i++) {
+            for (int w = 0; w <= W; w++) {
+                if (i == 0 || w == 0) {
+                    dp[i][w] = 0;
+                } else if (items[i - 1].weight <= w) {
+                    dp[i][w] = Math.max(items[i - 1].value + dp[i - 1][w - items[i - 1].weight], dp[i - 1][w]);
+                } else {
+                    dp[i][w] = dp[i - 1][w];
+                }
+            }
+        }
+
+        return dp[n][W];
+    }
+
+    public static void main(String[] args) {
+        int W = 50;
+        KnapsackItem[] items = {new KnapsackItem(60, 10), new KnapsackItem(100, 20), new KnapsackItem(120, 30)};
+        int n = items.length;
+        int maxValue = knapsack(W, items, n);
+        System.out.println("Maximum value for 0-1 Knapsack: " + maxValue);
+    }
+}
+
+//Time and space  O(n * W)
